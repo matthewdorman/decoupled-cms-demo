@@ -1,6 +1,6 @@
 import { DrupalArticle, DrupalEvent, DrupalApiResponse } from '../types';
 
-const DRUPAL_BASE_URL = 'https://www.drupal.org/api-d7';
+const DRUPAL_BASE_URL = 'https://drupalize.me/jsonapi';
 
 class DrupalApiService {
   private async fetchFromDrupal<T>(endpoint: string): Promise<DrupalApiResponse<T>> {
@@ -18,23 +18,24 @@ class DrupalApiService {
 
   async getArticles(limit: number = 10): Promise<DrupalArticle[]> {
     try {
-      // Using Drupal.org's API as an example - in real implementation you'd use JSON API format
-      const response = await fetch(`${DRUPAL_BASE_URL}/node.json?type=page&limit=${limit}`);
+      // Using Drupalize.me's JSON API endpoint for articles
+      const response = await fetch(`${DRUPAL_BASE_URL}/node/article?page[limit]=${limit}&include=field_image`);
       const data = await response.json();
       
-      // Transform the data to match our expected format
-      return data.list?.map((item: any) => ({
-        id: item.nid,
+      // Return the JSON API formatted data
+      return data.data?.map((item: any) => ({
+        id: item.id,
         type: 'node--article',
         attributes: {
-          title: item.title,
+          title: item.attributes.title,
           body: {
-            value: item.body || '',
+            value: item.attributes.body?.value || '',
             format: 'basic_html',
-            processed: item.body || ''
+            processed: item.attributes.body?.processed || item.attributes.body?.value || ''
           },
-          created: item.created,
-          changed: item.changed || item.created
+          created: item.attributes.created,
+          changed: item.attributes.changed || item.attributes.created,
+          field_image: item.attributes.field_image
         }
       })) || [];
     } catch (error) {
@@ -60,11 +61,11 @@ class DrupalApiService {
         id: '1',
         type: 'node--article',
         attributes: {
-          title: 'Getting Started with Drupal JSON API',
+          title: 'Building Modern Drupal Sites with JSON API',
           body: {
-            value: 'Learn how to build decoupled applications using Drupal as a headless CMS with JSON API.',
+            value: 'Discover how to leverage Drupal\'s powerful JSON API to create modern, decoupled web applications. This comprehensive guide covers everything from basic setup to advanced relationship handling.',
             format: 'basic_html',
-            processed: '<p>Learn how to build decoupled applications using Drupal as a headless CMS with JSON API.</p>'
+            processed: '<p>Discover how to leverage Drupal\'s powerful JSON API to create modern, decoupled web applications. This comprehensive guide covers everything from basic setup to advanced relationship handling.</p><p>The JSON API module in Drupal core provides a standardized way to expose your content as JSON, making it easy to build React, Vue, or Angular frontends that consume your Drupal content.</p>'
           },
           created: '2024-01-15T10:00:00Z',
           changed: '2024-01-15T10:00:00Z'
@@ -74,11 +75,11 @@ class DrupalApiService {
         id: '2',
         type: 'node--article',
         attributes: {
-          title: 'Advanced JSON API Relationships',
+          title: 'Mastering Entity Relationships in Drupal JSON API',
           body: {
-            value: 'Explore complex data relationships and includes in Drupal JSON API responses.',
+            value: 'Learn how to work with complex entity relationships using Drupal\'s JSON API. From simple references to nested includes, this article covers all the techniques you need.',
             format: 'basic_html',
-            processed: '<p>Explore complex data relationships and includes in Drupal JSON API responses.</p>'
+            processed: '<p>Learn how to work with complex entity relationships using Drupal\'s JSON API. From simple references to nested includes, this article covers all the techniques you need.</p><p>Understanding how to properly structure your API calls with includes and sparse fieldsets can dramatically improve your application\'s performance while maintaining clean, predictable data structures.</p>'
           },
           created: '2024-01-10T14:30:00Z',
           changed: '2024-01-10T14:30:00Z'
@@ -88,11 +89,11 @@ class DrupalApiService {
         id: '3',
         type: 'node--article',
         attributes: {
-          title: 'Performance Optimization for Headless Drupal',
+          title: 'Drupal as a Headless CMS: Performance Best Practices',
           body: {
-            value: 'Best practices for optimizing performance in decoupled Drupal architectures.',
+            value: 'Optimize your headless Drupal setup for maximum performance. This guide covers caching strategies, query optimization, and frontend integration patterns.',
             format: 'basic_html',
-            processed: '<p>Best practices for optimizing performance in decoupled Drupal architectures.</p>'
+            processed: '<p>Optimize your headless Drupal setup for maximum performance. This guide covers caching strategies, query optimization, and frontend integration patterns.</p><p>From Redis caching to CDN integration, learn how to scale your decoupled Drupal architecture to handle high-traffic scenarios while maintaining fast response times.</p>'
           },
           created: '2024-01-05T09:15:00Z',
           changed: '2024-01-05T09:15:00Z'

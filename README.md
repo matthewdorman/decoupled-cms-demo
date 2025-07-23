@@ -24,51 +24,40 @@ The Drupal integration uses the JSON API specification, which provides a standar
 
 #### Base URL
 ```
-https://www.drupal.org/api-d7
+https://drupalize.me/jsonapi
 ```
 
 #### Endpoints Used
 
 | Endpoint | Method | Description | Response Format |
 |----------|--------|-------------|-----------------|
-| `/node.json?type=page&limit={limit}` | GET | Fetch articles/pages | JSON API format with `data` array |
+| `/node/article?page[limit]={limit}&include=field_image` | GET | Fetch articles with images | JSON API format with `data` array |
 
 **Example Response Structure:**
 ```json
 {
-  "list": [
+  "data": [
     {
-      "nid": "123",
-      "title": "Article Title",
-      "body": "Article content...",
-      "created": "2024-01-15T10:00:00Z",
-      "changed": "2024-01-15T10:00:00Z"
+      "id": "123",
+      "type": "node--article",
+      "attributes": {
+        "title": "Article Title",
+        "body": {
+          "value": "Article content...",
+          "processed": "<p>Article content...</p>"
+        },
+        "created": "2024-01-15T10:00:00Z",
+        "changed": "2024-01-15T10:00:00Z"
+      }
     }
   ]
 }
 ```
 
-**Transformed to JSON API Format:**
-```json
-{
-  "id": "123",
-  "type": "node--article",
-  "attributes": {
-    "title": "Article Title",
-    "body": {
-      "value": "Article content...",
-      "format": "basic_html",
-      "processed": "<p>Article content...</p>"
-    },
-    "created": "2024-01-15T10:00:00Z",
-    "changed": "2024-01-15T10:00:00Z"
-  }
-}
-```
 
 #### Mock Data Endpoints
 
-Since we're using Drupal.org's API as an example, the following content types use mock data:
+Since we're using Drupalize.me's API as an example, the following content types use mock data when the live API is unavailable:
 
 - **Articles**: Demonstrates JSON API format with attributes and relationships
 - **Events**: Shows event-specific fields like `field_event_date` and `field_location`
