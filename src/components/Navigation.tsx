@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Code2, Database, Globe, Home } from 'lucide-react';
+import { Code2, Database, Globe, Home, FileCode } from 'lucide-react';
 
 export const Navigation: React.FC = () => {
   const location = useLocation();
@@ -46,6 +46,10 @@ export const Navigation: React.FC = () => {
             <Link to="/wordpress" className={linkClass('/wordpress')}>
               <Globe className="w-4 h-4" />
               <span>WordPress</span>
+            </Link>
+            <Link to="/code-examples" className={linkClass('/code-examples')}>
+              <FileCode className="w-4 h-4" />
+              <span>Code Examples</span>
             </Link>
           </nav>
         </div>

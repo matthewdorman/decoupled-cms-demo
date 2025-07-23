@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Database, Globe, ArrowRight, Code2, Zap, Shield } from 'lucide-react';
+import { Database, Globe, ArrowRight, Code2, Zap, Shield, FileCode } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
   return (
@@ -106,7 +106,7 @@ export const HomePage: React.FC = () => {
           <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
             What You'll See in This Demo
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Code2 className="w-6 h-6 text-blue-600" />
@@ -128,6 +128,24 @@ export const HomePage: React.FC = () => {
               <h3 className="font-semibold text-gray-900 mb-2">Decoupled Architecture</h3>
               <p className="text-sm text-gray-600">Modern React frontend consuming headless CMS backends</p>
             </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <FileCode className="w-6 h-6 text-orange-600" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Code Examples</h3>
+              <p className="text-sm text-gray-600">Interactive code snippets showing API integration patterns</p>
+            </div>
+          </div>
+          
+          <div className="mt-8 text-center">
+            <Link 
+              to="/code-examples"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-green-600 text-white rounded-lg hover:from-blue-700 hover:to-green-700 transition-all duration-200 font-medium"
+            >
+              <FileCode className="w-5 h-5" />
+              View Code Examples
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </main>
