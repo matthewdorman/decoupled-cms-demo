@@ -219,6 +219,74 @@ const fetchEvents = async () => {
 };`
     },
     {
+      title: 'WooCommerce Products API',
+      language: 'JavaScript',
+      description: 'Fetch products from WooCommerce REST API with full product details.',
+      code: `// Fetch products from WooCommerce API
+const fetchWooCommerceProducts = async (limit = 10) => {
+  const response = await fetch(
+    \`https://example.com/wp-json/wc/v3/products?per_page=\${limit}&status=publish\`,
+    {
+      headers: {
+        'Authorization': 'Basic ' + btoa('consumer_key:consumer_secret')
+      }
+    }
+  );
+  
+  if (!response.ok) {
+    throw new Error(\`HTTP error! status: \${response.status}\`);
+  }
+  
+  const products = await response.json();
+  
+  return products.map(product => ({
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    regular_price: product.regular_price,
+    sale_price: product.sale_price,
+    on_sale: product.on_sale,
+    description: product.description,
+    short_description: product.short_description,
+    images: product.images,
+    categories: product.categories,
+    stock_status: product.stock_status,
+    stock_quantity: product.stock_quantity
+  }));
+};
+
+// Create an order
+const createWooCommerceOrder = async (orderData) => {
+  const response = await fetch(
+    'https://example.com/wp-json/wc/v3/orders',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic ' + btoa('consumer_key:consumer_secret')
+      },
+      body: JSON.stringify({
+        payment_method: 'bacs',
+        payment_method_title: 'Direct Bank Transfer',
+        set_paid: false,
+        billing: orderData.billing,
+        shipping: orderData.shipping,
+        line_items: orderData.line_items,
+        shipping_lines: [
+          {
+            method_id: 'flat_rate',
+            method_title: 'Flat Rate',
+            total: '10.00'
+          }
+        ]
+      })
+    }
+  );
+  
+  return await response.json();
+};`
+    },
+    {
       title: 'React Hook for WordPress Content',
       language: 'TypeScript',
       description: 'Custom React hook for managing WordPress content with loading states and error handling.',

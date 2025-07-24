@@ -103,3 +103,80 @@ export interface DrupalApiResponse<T> {
 }
 
 export interface WordPressApiResponse<T> extends Array<T> {}
+
+// WooCommerce Types
+export interface WooCommerceProduct {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  short_description: string;
+  price: string;
+  regular_price: string;
+  sale_price: string;
+  on_sale: boolean;
+  status: string;
+  featured: boolean;
+  catalog_visibility: string;
+  stock_status: string;
+  stock_quantity: number;
+  manage_stock: boolean;
+  images: Array<{
+    id: number;
+    src: string;
+    alt: string;
+  }>;
+  categories: Array<{
+    id: number;
+    name: string;
+    slug: string;
+  }>;
+  attributes: Array<{
+    id: number;
+    name: string;
+    options: string[];
+  }>;
+}
+
+export interface CartItem {
+  product_id: number;
+  quantity: number;
+  name: string;
+  price: string;
+  image: string;
+}
+
+export interface WooCommerceOrder {
+  id: number;
+  status: string;
+  total: string;
+  billing: {
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    phone?: string;
+    address_1?: string;
+    city?: string;
+    state?: string;
+    postcode?: string;
+    country?: string;
+  };
+  shipping: {
+    first_name?: string;
+    last_name?: string;
+    address_1?: string;
+    city?: string;
+    state?: string;
+    postcode?: string;
+    country?: string;
+  };
+  line_items: Array<{
+    product_id: number;
+    quantity: number;
+    name: string;
+    price: string;
+  }>;
+  date_created: string;
+  order_key: string;
+  payment_method: string;
+}

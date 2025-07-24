@@ -2,6 +2,7 @@ import React from 'react';
 import { Globe } from 'lucide-react';
 import { useWordPressPosts, useWordPressEvents } from '../hooks/useWordPressContent';
 import { ContentCard } from './ContentCard';
+import { ECommerceSection } from './ECommerceSection';
 import { LoadingSpinner } from './LoadingSpinner';
 import { ErrorMessage } from './ErrorMessage';
 
@@ -70,6 +71,9 @@ export const WordPressSection: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* E-commerce Section */}
+      <ECommerceSection />
     </section>
   );
 };
