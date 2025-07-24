@@ -991,7 +991,7 @@ const fetchArticleWithAuthorAndTags = async (articleId) => {
   return (
     <div className="min-h-screen bg-brand-light-gray">
       {/* Header */}
-      <div className="bg-gradient-to-r from-brand-navy to-brand-teal text-white py-12">
+      <div className="bg-gradient-to-r from-brand-red to-brand-teal text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
             to="/"
@@ -1028,9 +1028,9 @@ const fetchArticleWithAuthorAndTags = async (articleId) => {
                   onClick={() => setActiveCategory(category.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                     isActive
-                      ? category.color === 'navy' 
-                        ? 'bg-brand-navy text-white shadow-md'
-                        : 'bg-brand-teal/10 text-brand-navy shadow-md'
+                      ? category.color === 'red' 
+                        ? 'bg-brand-red text-white shadow-md'
+                        : 'bg-brand-teal/10 text-brand-red shadow-md'
                       : 'bg-white text-brand-text-gray hover:bg-brand-light-gray hover:text-brand-navy shadow-sm'
                   }`}
                 >
@@ -1051,7 +1051,7 @@ const fetchArticleWithAuthorAndTags = async (articleId) => {
                   <activeConfig.icon className="w-6 h-6 text-brand-teal" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-brand-navy">{activeConfig.name}</h2>
+                  <h2 className="text-2xl font-bold text-brand-red">{activeConfig.name}</h2>
                   <p className="text-brand-text-gray">
                     {activeCategory === 'drupal-api' && 'Code snippets for working with Drupal\'s JSON API'}
                     {activeCategory === 'wordpress-api' && 'Code snippets for working with WordPress REST API'}
@@ -1080,7 +1080,7 @@ const fetchArticleWithAuthorAndTags = async (articleId) => {
 
         {/* Presentation Tips */}
         <div className="mt-12 bg-brand-teal/5 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-brand-navy mb-3">💡 Presentation Tips</h3>
+          <h3 className="text-lg font-semibold text-brand-red mb-3">💡 Presentation Tips</h3>
           <div className="text-sm text-brand-text-gray space-y-2">
             <p>• Use the category tabs to focus on specific topics during your presentation</p>
             <p>• Click the copy button to quickly grab code snippets for live demos</p>

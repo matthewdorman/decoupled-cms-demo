@@ -31,7 +31,7 @@ export const CodeExample: React.FC<CodeExampleProps> = ({
       <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b">
         <div className="flex items-center gap-2">
           <Code2 className="w-4 h-4 text-brand-text-gray" />
-          <h3 className="font-semibold text-brand-navy">{title}</h3>
+          <h3 className="font-semibold text-brand-red">{title}</h3>
           <span className="px-2 py-1 text-xs bg-brand-teal/10 text-brand-navy rounded">
             {language}
           </span>
@@ -55,13 +55,13 @@ export const CodeExample: React.FC<CodeExampleProps> = ({
       </div>
       
       {description && (
-        <div className="px-4 py-2 bg-brand-teal/5 text-sm text-brand-navy border-b">
+        <div className="px-4 py-2 bg-brand-teal/5 text-sm text-brand-red border-b">
           {description}
         </div>
       )}
       
       <div className="relative">
-        <pre className="p-4 overflow-x-auto text-sm bg-brand-navy text-gray-100">
+        <pre className="p-4 overflow-x-auto text-sm bg-brand-red text-gray-100">
           <code>{code}</code>
         </pre>
       </div>

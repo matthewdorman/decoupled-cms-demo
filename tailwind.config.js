@@ -5,7 +5,7 @@ export default {
     extend: {
       colors: {
         brand: {
-          navy: '#1B2A41',
+          navy: '#FE1132',
           teal: '#14B8A6',
           red: '#FE1132',
           'light-gray': '#F7FAFC',

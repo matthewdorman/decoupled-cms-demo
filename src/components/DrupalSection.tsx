@@ -16,14 +16,14 @@ export const DrupalSection: React.FC = () => {
           <Database className="w-6 h-6 text-brand-teal" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-brand-navy">Drupal JSON API</h2>
+          <h2 className="text-2xl font-bold text-brand-red">Drupal JSON API</h2>
           <p className="text-brand-text-gray">Content fetched via Drupal's JSON API specification</p>
         </div>
       </div>
 
       {/* Articles Section */}
       <div className="mb-8">
-        <h3 className="text-lg font-semibold text-brand-navy mb-4">Articles</h3>
+        <h3 className="text-lg font-semibold text-brand-red mb-4">Articles</h3>
         {articlesLoading ? (
           <LoadingSpinner className="py-8" />
         ) : articlesError ? (
@@ -47,7 +47,7 @@ export const DrupalSection: React.FC = () => {
 
       {/* Events Section */}
       <div>
-        <h3 className="text-lg font-semibold text-brand-navy mb-4">Events</h3>
+        <h3 className="text-lg font-semibold text-brand-red mb-4">Events</h3>
         {eventsLoading ? (
           <LoadingSpinner className="py-8" />
         ) : eventsError ? (

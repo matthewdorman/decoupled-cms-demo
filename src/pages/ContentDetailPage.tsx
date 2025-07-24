@@ -67,7 +67,7 @@ export const ContentDetailPage: React.FC = () => {
       name: 'Drupal JSON API',
       icon: Database,
       color: 'teal',
-      bgColor: 'bg-brand-navy',
+      bgColor: 'bg-brand-red',
       lightBg: 'bg-brand-teal/5',
       textColor: 'text-brand-teal'
     },
@@ -75,7 +75,7 @@ export const ContentDetailPage: React.FC = () => {
       name: 'WordPress REST API',
       icon: Globe,
       color: 'teal',
-      bgColor: 'bg-brand-navy',
+      bgColor: 'bg-brand-red',
       lightBg: 'bg-brand-teal/5',
       textColor: 'text-brand-teal'
     }
@@ -206,7 +206,7 @@ export const ContentDetailPage: React.FC = () => {
             <div className="flex flex-wrap gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-brand-text-gray" />
-                <span className="text-brand-navy">
+                <span className="text-brand-red">
                   Published: {formatDate(publishDate)}
                 </span>
               </div>
@@ -214,7 +214,7 @@ export const ContentDetailPage: React.FC = () => {
               {type === 'event' && eventDate && (
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-brand-text-gray" />
-                  <span className="text-brand-navy">
+                  <span className="text-brand-red">
                     Event Date: {formatDate(eventDate)}
                   </span>
                 </div>
@@ -223,7 +223,7 @@ export const ContentDetailPage: React.FC = () => {
               {location && (
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-brand-text-gray" />
-                  <span className="text-brand-navy">{location}</span>
+                  <span className="text-brand-red">{location}</span>
                 </div>
               )}
             </div>
@@ -239,7 +239,7 @@ export const ContentDetailPage: React.FC = () => {
 
           {/* API Information */}
           <div className="px-6 py-4 bg-brand-light-gray border-t">
-            <h3 className="text-sm font-semibold text-brand-navy mb-2">API Details</h3>
+            <h3 className="text-sm font-semibold text-brand-red mb-2">API Details</h3>
             <div className="text-xs text-brand-text-gray space-y-1">
               <p><strong>Platform:</strong> {config.name}</p>
               <p><strong>Content Type:</strong> {type}</p>

@@ -45,13 +45,13 @@ export const ContentCard: React.FC<ContentCardProps> = ({
       className={`block bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-200 p-6 hover:scale-[1.02] ${className}`}
     >
       <div className="flex items-start justify-between mb-3">
-        <h3 className="text-lg font-semibold text-brand-navy line-clamp-2">
+        <h3 className="text-lg font-semibold text-brand-red line-clamp-2">
           {title}
         </h3>
         <span className={`px-2 py-1 text-xs font-medium rounded-full ${
           type === 'article' 
-            ? 'bg-brand-teal/10 text-brand-navy' 
-            : 'bg-brand-teal/20 text-brand-navy'
+            ? 'bg-brand-teal/10 text-brand-red' 
+            : 'bg-brand-teal/20 text-brand-red'
         }`}>
           {type}
         </span>
