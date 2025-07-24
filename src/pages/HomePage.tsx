@@ -23,10 +23,15 @@ export const HomePage: React.FC = () => {
           </p>
           
           {/* QR Code for Demo Access */}
-          <div className="flex justify-center mb-8">
+          <div className="flex flex-col md:flex-row justify-center gap-6 mb-8">
             <QRCode 
               url="https://decoupled-cms-demo-haj7i.kinsta.page/"
-              title="Access This Demo"
+              title="Access Live Demo"
+              className="max-w-sm"
+            />
+            <QRCode 
+              url="https://github.com/matthewdorman/decoupled-cms-demo/tree/main"
+              title="View Source Code"
               className="max-w-sm"
             />
           </div>
