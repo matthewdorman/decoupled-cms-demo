@@ -4,7 +4,7 @@ import { Database, Globe, ArrowRight, Code2, Zap, Shield, FileCode } from 'lucid
 
 export const HomePage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-light-gray via-white to-brand-teal/5">
+    <div className="min-h-screen bg-gradient-to-br from-brand-light-gray via-white to-brand-navy/5">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
         <div className="text-center mb-16">
@@ -30,7 +30,7 @@ export const HomePage: React.FC = () => {
             className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100 hover:border-brand-teal/30"
           >
             <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-brand-teal/10 rounded-xl group-hover:bg-brand-teal/20 transition-colors">
+              <div className="p-3 bg-brand-navy/10 rounded-xl group-hover:bg-brand-navy/20 transition-colors">
                 <Database className="w-8 h-8 text-brand-teal" />
               </div>
               <div>
@@ -68,7 +68,7 @@ export const HomePage: React.FC = () => {
             className="group bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-8 border border-gray-100 hover:border-brand-teal/30"
           >
             <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-brand-teal/10 rounded-xl group-hover:bg-brand-teal/20 transition-colors">
+              <div className="p-3 bg-brand-navy/10 rounded-xl group-hover:bg-brand-navy/20 transition-colors">
                 <Globe className="w-8 h-8 text-brand-teal" />
               </div>
               <div>

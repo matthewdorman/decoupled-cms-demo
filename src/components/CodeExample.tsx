@@ -61,7 +61,7 @@ export const CodeExample: React.FC<CodeExampleProps> = ({
       )}
       
       <div className="relative">
-        <pre className="p-4 overflow-x-auto text-sm bg-brand-red text-gray-100">
+        <pre className="p-4 overflow-x-auto text-sm bg-brand-navy text-gray-100">
           <code>{code}</code>
         </pre>
       </div>

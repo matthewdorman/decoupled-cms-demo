@@ -21,7 +21,7 @@ export const Navigation: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between py-4">
           <Link to="/" className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-br from-brand-red to-brand-teal rounded-xl">
+            <div className="p-2 bg-gradient-to-br from-brand-navy to-brand-teal rounded-xl">
               <Code2 className="w-6 h-6 text-white" />
             </div>
             <div>

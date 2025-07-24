@@ -991,7 +991,7 @@ const fetchArticleWithAuthorAndTags = async (articleId) => {
   return (
     <div className="min-h-screen bg-brand-light-gray">
       {/* Header */}
-      <div className="bg-gradient-to-r from-brand-red to-brand-teal text-white py-12">
+      <div className="bg-gradient-to-r from-brand-navy to-brand-teal text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
             to="/"
@@ -1028,8 +1028,8 @@ const fetchArticleWithAuthorAndTags = async (articleId) => {
                   onClick={() => setActiveCategory(category.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                     isActive
-                      ? category.color === 'red' 
-                        ? 'bg-brand-red text-white shadow-md'
+                      ? category.color === 'navy' 
+                        ? 'bg-brand-navy text-white shadow-md'
                         : 'bg-brand-teal/10 text-brand-red shadow-md'
                       : 'bg-white text-brand-text-gray hover:bg-brand-light-gray hover:text-brand-navy shadow-sm'
                   }`}

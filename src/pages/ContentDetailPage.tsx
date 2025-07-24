@@ -67,7 +67,7 @@ export const ContentDetailPage: React.FC = () => {
       name: 'Drupal JSON API',
       icon: Database,
       color: 'teal',
-      bgColor: 'bg-brand-red',
+      bgColor: 'bg-brand-navy',
       lightBg: 'bg-brand-teal/5',
       textColor: 'text-brand-teal'
     },
@@ -75,7 +75,7 @@ export const ContentDetailPage: React.FC = () => {
       name: 'WordPress REST API',
       icon: Globe,
       color: 'teal',
-      bgColor: 'bg-brand-red',
+      bgColor: 'bg-brand-navy',
       lightBg: 'bg-brand-teal/5',
       textColor: 'text-brand-teal'
     }
