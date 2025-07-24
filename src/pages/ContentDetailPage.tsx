@@ -244,7 +244,7 @@ export const ContentDetailPage: React.FC = () => {
               <p><strong>Platform:</strong> {config.name}</p>
               <p><strong>Content Type:</strong> {type}</p>
               <p><strong>Content ID:</strong> {id}</p>
-              <p><strong>Data Structure:</strong> {platform === 'drupal' ? 'JSON API format with attributes/relationships' : 'REST API format with direct properties'}</p>
+              <p><strong>Data Structure:</strong> {platform === 'drupal' ? 'JSON API format with attributes/relationships' : \'REST API format with direct properties'}</p>
             </div>
           </div>
         </article>
