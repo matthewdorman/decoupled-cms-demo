@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Code2, Database, Globe } from 'lucide-react';
+import { ArrowLeft, Code2, Database, Globe, Zap, Server } from 'lucide-react';
 import { CodeExample } from '../components/CodeExample';
 
+type ExampleCategory = 'drupal-api' | 'wordpress-api' | 'graphql' | 'php-extensions' | 'comparison';
+
 export const CodeExamplesPage: React.FC = () => {
+  const [activeCategory, setActiveCategory] = useState<ExampleCategory>('drupal-api');
+
+  const categories = [
+    { id: 'drupal-api' as ExampleCategory, name: 'Drupal JSON API', icon: Database, color: 'blue' },
+    { id: 'wordpress-api' as ExampleCategory, name: 'WordPress REST API', icon: Globe, color: 'green' },
+    { id: 'graphql' as ExampleCategory, name: 'GraphQL', icon: Zap, color: 'purple' },
+    { id: 'php-extensions' as ExampleCategory, name: 'PHP Extensions', icon: Server, color: 'orange' },
+    { id: 'comparison' as ExampleCategory, name: 'API Comparison', icon: Code2, color: 'gray' }
+  ];
+
   const drupalExamples = [
     {
       title: 'Fetch Articles from Drupal JSON API',
@@ -261,9 +273,519 @@ export const useWordPressPosts = (limit: number = 10) => {
     }
   ];
 
+  const graphqlExamples = [
+    {
+      title: 'Drupal GraphQL Query',
+      language: 'GraphQL',
+      description: 'GraphQL query for fetching articles from Drupal with the GraphQL module.',
+      code: `# GraphQL query for Drupal articles
+query GetArticles($limit: Int = 10) {
+  nodeQuery(
+    filter: {
+      conditions: [
+        { field: "type", value: "article" }
+        { field: "status", value: "1" }
+      ]
+    }
+    limit: $limit
+    sort: [{ field: "created", direction: DESC }]
+  ) {
+    entities {
+      ... on NodeArticle {
+        nid
+        title
+        body {
+          processed
+        }
+        created
+        fieldImage {
+          alt
+          url
+        }
+        fieldTags {
+          entity {
+            ... on TaxonomyTermTags {
+              name
+            }
+          }
+        }
+        author {
+          displayName
+        }
+      }
+    }
+  }
+}`
+    },
+    {
+      title: 'WordPress GraphQL with WPGraphQL',
+      language: 'GraphQL',
+      description: 'GraphQL query for WordPress using the WPGraphQL plugin.',
+      code: `# GraphQL query for WordPress posts
+query GetPosts($first: Int = 10) {
+  posts(first: $first, where: { status: PUBLISH }) {
+    nodes {
+      id
+      title
+      content
+      excerpt
+      date
+      featuredImage {
+        node {
+          sourceUrl
+          altText
+        }
+      }
+      categories {
+        nodes {
+          name
+          slug
+        }
+      }
+      tags {
+        nodes {
+          name
+          slug
+        }
+      }
+      author {
+        node {
+          name
+          avatar {
+            url
+          }
+        }
+      }
+    }
+  }
+}`
+    },
+    {
+      title: 'GraphQL Client Implementation',
+      language: 'JavaScript',
+      description: 'JavaScript client for making GraphQL requests to both Drupal and WordPress.',
+      code: `// GraphQL client for both Drupal and WordPress
+class GraphQLClient {
+  constructor(endpoint) {
+    this.endpoint = endpoint;
+  }
+
+  async query(query, variables = {}) {
+    const response = await fetch(this.endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        query,
+        variables
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(\`GraphQL request failed: \${response.status}\`);
+    }
+
+    const result = await response.json();
+    
+    if (result.errors) {
+      throw new Error(\`GraphQL errors: \${result.errors.map(e => e.message).join(', ')}\`);
+    }
+
+    return result.data;
+  }
+}
+
+// Usage examples
+const drupalClient = new GraphQLClient('https://example.com/graphql');
+const wordpressClient = new GraphQLClient('https://example.com/graphql');
+
+// Fetch Drupal articles
+const drupalQuery = \`
+  query GetArticles($limit: Int!) {
+    nodeQuery(filter: {conditions: [{field: "type", value: "article"}]}, limit: $limit) {
+      entities {
+        ... on NodeArticle {
+          nid
+          title
+          body { processed }
+          created
+        }
+      }
+    }
+  }
+\`;
+
+const drupalArticles = await drupalClient.query(drupalQuery, { limit: 5 });
+
+// Fetch WordPress posts
+const wordpressQuery = \`
+  query GetPosts($first: Int!) {
+    posts(first: $first) {
+      nodes {
+        id
+        title
+        content
+        date
+      }
+    }
+  }
+\`;
+
+const wordpressPosts = await wordpressClient.query(wordpressQuery, { first: 5 });`
+    }
+  ];
+
+  const phpExamples = [
+    {
+      title: 'Drupal Custom Module - API Extension',
+      language: 'PHP',
+      description: 'Custom Drupal module that extends the JSON API with additional endpoints.',
+      code: `<?php
+// custom_api.module
+
+use Drupal\\Core\\Routing\\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function custom_api_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    case 'help.page.custom_api':
+      return '<p>' . t('Custom API extensions for JSON API.') . '</p>';
+  }
+}
+
+// custom_api.routing.yml
+custom_api.articles_enhanced:
+  path: '/api/articles/enhanced'
+  defaults:
+    _controller: '\\Drupal\\custom_api\\Controller\\ArticleController::getEnhancedArticles'
+  requirements:
+    _permission: 'access content'
+  methods: [GET]
+
+// src/Controller/ArticleController.php
+<?php
+
+namespace Drupal\\custom_api\\Controller;
+
+use Drupal\\Core\\Controller\\ControllerBase;
+use Drupal\\node\\Entity\\Node;
+use Symfony\\Component\\HttpFoundation\\JsonResponse;
+
+class ArticleController extends ControllerBase {
+
+  /**
+   * Returns enhanced article data with computed fields.
+   */
+  public function getEnhancedArticles() {
+    $query = \\Drupal::entityQuery('node')
+      ->condition('type', 'article')
+      ->condition('status', 1)
+      ->sort('created', 'DESC')
+      ->range(0, 10);
+    
+    $nids = $query->execute();
+    $nodes = Node::loadMultiple($nids);
+    
+    $articles = [];
+    foreach ($nodes as $node) {
+      $articles[] = [
+        'id' => $node->id(),
+        'title' => $node->getTitle(),
+        'body' => $node->get('body')->processed,
+        'created' => $node->getCreatedTime(),
+        'author' => $node->getOwner()->getDisplayName(),
+        'read_time' => $this->calculateReadTime($node->get('body')->value),
+        'word_count' => str_word_count(strip_tags($node->get('body')->value)),
+        'tags' => $this->getTags($node),
+      ];
+    }
+    
+    return new JsonResponse([
+      'data' => $articles,
+      'meta' => [
+        'count' => count($articles),
+        'generated' => date('c'),
+      ]
+    ]);
+  }
+  
+  private function calculateReadTime($text) {
+    $word_count = str_word_count(strip_tags($text));
+    return ceil($word_count / 200); // Assuming 200 words per minute
+  }
+  
+  private function getTags($node) {
+    $tags = [];
+    if ($node->hasField('field_tags') && !$node->get('field_tags')->isEmpty()) {
+      foreach ($node->get('field_tags')->referencedEntities() as $tag) {
+        $tags[] = $tag->getName();
+      }
+    }
+    return $tags;
+  }
+}`
+    },
+    {
+      title: 'WordPress Plugin - REST API Extension',
+      language: 'PHP',
+      description: 'WordPress plugin that extends the REST API with custom endpoints and fields.',
+      code: `<?php
+/**
+ * Plugin Name: Custom API Extensions
+ * Description: Extends WordPress REST API with custom endpoints
+ * Version: 1.0.0
+ */
+
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+class CustomAPIExtensions {
+    
+    public function __construct() {
+        add_action('rest_api_init', [$this, 'register_custom_endpoints']);
+        add_action('rest_api_init', [$this, 'add_custom_fields']);
+    }
+    
+    /**
+     * Register custom REST API endpoints
+     */
+    public function register_custom_endpoints() {
+        // Enhanced posts endpoint
+        register_rest_route('custom/v1', '/posts/enhanced', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_enhanced_posts'],
+            'permission_callback' => '__return_true',
+            'args' => [
+                'per_page' => [
+                    'default' => 10,
+                    'sanitize_callback' => 'absint',
+                ],
+            ],
+        ]);
+        
+        // Analytics endpoint
+        register_rest_route('custom/v1', '/analytics', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_site_analytics'],
+            'permission_callback' => 'current_user_can',
+            'permission_callback_args' => ['manage_options'],
+        ]);
+    }
+    
+    /**
+     * Add custom fields to existing endpoints
+     */
+    public function add_custom_fields() {
+        // Add read time to posts
+        register_rest_field('post', 'read_time', [
+            'get_callback' => [$this, 'get_read_time'],
+            'schema' => [
+                'description' => 'Estimated reading time in minutes',
+                'type' => 'integer',
+            ],
+        ]);
+        
+        // Add word count to posts
+        register_rest_field('post', 'word_count', [
+            'get_callback' => [$this, 'get_word_count'],
+            'schema' => [
+                'description' => 'Total word count',
+                'type' => 'integer',
+            ],
+        ]);
+    }
+    
+    /**
+     * Enhanced posts endpoint callback
+     */
+    public function get_enhanced_posts($request) {
+        $per_page = $request->get_param('per_page');
+        
+        $posts = get_posts([
+            'numberposts' => $per_page,
+            'post_status' => 'publish',
+            'meta_query' => [
+                'relation' => 'OR',
+                [
+                    'key' => 'featured',
+                    'value' => '1',
+                    'compare' => '='
+                ],
+                [
+                    'key' => 'featured',
+                    'compare' => 'NOT EXISTS'
+                ]
+            ]
+        ]);
+        
+        $enhanced_posts = [];
+        foreach ($posts as $post) {
+            $enhanced_posts[] = [
+                'id' => $post->ID,
+                'title' => get_the_title($post->ID),
+                'content' => apply_filters('the_content', $post->post_content),
+                'excerpt' => get_the_excerpt($post->ID),
+                'date' => $post->post_date,
+                'author' => get_the_author_meta('display_name', $post->post_author),
+                'featured_image' => get_the_post_thumbnail_url($post->ID, 'large'),
+                'categories' => wp_get_post_categories($post->ID, ['fields' => 'names']),
+                'tags' => wp_get_post_tags($post->ID, ['fields' => 'names']),
+                'read_time' => $this->calculate_read_time($post->post_content),
+                'word_count' => str_word_count(strip_tags($post->post_content)),
+                'is_featured' => get_post_meta($post->ID, 'featured', true) === '1',
+                'view_count' => (int) get_post_meta($post->ID, 'view_count', true),
+            ];
+        }
+        
+        return rest_ensure_response([
+            'posts' => $enhanced_posts,
+            'meta' => [
+                'total' => count($enhanced_posts),
+                'generated' => current_time('c'),
+            ]
+        ]);
+    }
+    
+    /**
+     * Calculate reading time
+     */
+    private function calculate_read_time($content) {
+        $word_count = str_word_count(strip_tags($content));
+        return ceil($word_count / 200); // 200 words per minute
+    }
+    
+    /**
+     * Get read time for REST field
+     */
+    public function get_read_time($post) {
+        return $this->calculate_read_time($post['content']['rendered']);
+    }
+    
+    /**
+     * Get word count for REST field
+     */
+    public function get_word_count($post) {
+        return str_word_count(strip_tags($post['content']['rendered']));
+    }
+    
+    /**
+     * Site analytics endpoint
+     */
+    public function get_site_analytics($request) {
+        return rest_ensure_response([
+            'total_posts' => wp_count_posts()->publish,
+            'total_pages' => wp_count_posts('page')->publish,
+            'total_comments' => wp_count_comments()->approved,
+            'total_users' => count_users()['total_users'],
+            'recent_activity' => $this->get_recent_activity(),
+        ]);
+    }
+    
+    private function get_recent_activity() {
+        return [
+            'recent_posts' => get_posts(['numberposts' => 5, 'fields' => 'ids']),
+            'recent_comments' => get_comments(['number' => 5, 'fields' => 'ids']),
+        ];
+    }
+}
+
+// Initialize the plugin
+new CustomAPIExtensions();
+
+// Add custom post meta for view tracking
+add_action('wp_head', function() {
+    if (is_single()) {
+        $post_id = get_the_ID();
+        $current_views = (int) get_post_meta($post_id, 'view_count', true);
+        update_post_meta($post_id, 'view_count', $current_views + 1);
+    }
+});`
+    },
+    {
+      title: 'Drupal Event Subscriber for API Modifications',
+      language: 'PHP',
+      description: 'Drupal event subscriber that modifies JSON API responses dynamically.',
+      code: `<?php
+// src/EventSubscriber/JsonApiSubscriber.php
+
+namespace Drupal\\custom_api\\EventSubscriber;
+
+use Drupal\\jsonapi\\Events\\Events;
+use Drupal\\jsonapi\\Events\\EntityLoadedEvent;
+use Symfony\\Component\\EventDispatcher\\EventSubscriberInterface;
+
+/**
+ * Event subscriber for JSON API modifications.
+ */
+class JsonApiSubscriber implements EventSubscriberInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getSubscribedEvents() {
+    return [
+      Events::ENTITY_LOADED => 'onEntityLoaded',
+    ];
+  }
+
+  /**
+   * Modifies entities when loaded via JSON API.
+   */
+  public function onEntityLoaded(EntityLoadedEvent $event) {
+    $entity = $event->getEntity();
+    
+    // Only modify article nodes
+    if ($entity->getEntityTypeId() === 'node' && $entity->bundle() === 'article') {
+      // Add computed fields
+      $this->addComputedFields($entity);
+    }
+  }
+
+  /**
+   * Adds computed fields to the entity.
+   */
+  private function addComputedFields($entity) {
+    // Add read time calculation
+    if ($entity->hasField('body') && !$entity->get('body')->isEmpty()) {
+      $body_text = $entity->get('body')->value;
+      $word_count = str_word_count(strip_tags($body_text));
+      $read_time = ceil($word_count / 200);
+      
+      // Store as temporary data (not saved to database)
+      $entity->computed_read_time = $read_time;
+      $entity->computed_word_count = $word_count;
+    }
+    
+    // Add view count from custom table
+    $view_count = \\Drupal::database()
+      ->select('node_view_count', 'nvc')
+      ->fields('nvc', ['count'])
+      ->condition('nid', $entity->id())
+      ->execute()
+      ->fetchField();
+    
+    $entity->computed_view_count = $view_count ?: 0;
+  }
+}
+
+// services.yml
+services:
+  custom_api.jsonapi_subscriber:
+    class: Drupal\\custom_api\\EventSubscriber\\JsonApiSubscriber
+    tags:
+      - { name: event_subscriber }`
+    }
+  ];
+
   const comparisonExamples = [
     {
-      title: 'API Response Comparison',
+      title: 'API Response Structure Comparison',
       language: 'JSON',
       description: 'Side-by-side comparison of how the same content looks in both APIs.',
       code: `// Drupal JSON API Response Structure
@@ -324,8 +846,79 @@ export const useWordPressPosts = (limit: number = 10) => {
     }
   }
 ]`
+    },
+    {
+      title: 'GraphQL vs REST Comparison',
+      language: 'JavaScript',
+      description: 'Comparing GraphQL and REST API approaches for the same data.',
+      code: `// REST API - Multiple requests needed
+const fetchArticleWithAuthorAndTags = async (articleId) => {
+  // 1. Fetch article
+  const articleResponse = await fetch(\`/api/articles/\${articleId}\`);
+  const article = await articleResponse.json();
+  
+  // 2. Fetch author
+  const authorResponse = await fetch(\`/api/users/\${article.author_id}\`);
+  const author = await authorResponse.json();
+  
+  // 3. Fetch tags
+  const tagsResponse = await fetch(\`/api/articles/\${articleId}/tags\`);
+  const tags = await tagsResponse.json();
+  
+  return { ...article, author, tags };
+};
+
+// GraphQL - Single request
+const fetchArticleWithAuthorAndTags = async (articleId) => {
+  const query = \`
+    query GetArticle($id: ID!) {
+      article(id: $id) {
+        id
+        title
+        content
+        author {
+          name
+          email
+        }
+        tags {
+          name
+          slug
+        }
+      }
+    }
+  \`;
+  
+  const response = await fetch('/graphql', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables: { id: articleId } })
+  });
+  
+  const { data } = await response.json();
+  return data.article;
+};`
     }
   ];
+
+  const getExamplesForCategory = (category: ExampleCategory) => {
+    switch (category) {
+      case 'drupal-api':
+        return drupalExamples;
+      case 'wordpress-api':
+        return wordpressExamples;
+      case 'graphql':
+        return graphqlExamples;
+      case 'php-extensions':
+        return phpExamples;
+      case 'comparison':
+        return comparisonExamples;
+      default:
+        return [];
+    }
+  };
+
+  const activeExamples = getExamplesForCategory(activeCategory);
+  const activeConfig = categories.find(cat => cat.id === activeCategory);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -347,7 +940,7 @@ export const useWordPressPosts = (limit: number = 10) => {
             <div>
               <h1 className="text-3xl md:text-4xl font-bold">Code Examples</h1>
               <p className="text-white/90 mt-2">
-                Interactive code snippets showing how to integrate with both APIs
+                Interactive code snippets for API integration and platform extensions
               </p>
             </div>
           </div>
@@ -355,80 +948,77 @@ export const useWordPressPosts = (limit: number = 10) => {
       </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Drupal Examples */}
-        <section className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <Database className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">Drupal JSON API Examples</h2>
-              <p className="text-gray-600">Code snippets for working with Drupal's JSON API</p>
-            </div>
+        {/* Category Navigation */}
+        <div className="mb-8">
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category) => {
+              const Icon = category.icon;
+              const isActive = activeCategory === category.id;
+              return (
+                <button
+                  key={category.id}
+                  onClick={() => setActiveCategory(category.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                    isActive
+                      ? `bg-${category.color}-100 text-${category.color}-700 shadow-md`
+                      : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 shadow-sm'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {category.name}
+                </button>
+              );
+            })}
           </div>
-          
-          <div className="space-y-6">
-            {drupalExamples.map((example, index) => (
-              <CodeExample
-                key={index}
-                title={example.title}
-                language={example.language}
-                code={example.code}
-                description={example.description}
-              />
-            ))}
-          </div>
-        </section>
+        </div>
 
-        {/* WordPress Examples */}
-        <section className="mb-12">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Globe className="w-6 h-6 text-green-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">WordPress REST API Examples</h2>
-              <p className="text-gray-600">Code snippets for working with WordPress REST API</p>
-            </div>
+        {/* Active Category Content */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3">
+            {activeConfig && (
+              <>
+                <div className={`p-2 bg-${activeConfig.color}-100 rounded-lg`}>
+                  <activeConfig.icon className={`w-6 h-6 text-${activeConfig.color}-600`} />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">{activeConfig.name}</h2>
+                  <p className="text-gray-600">
+                    {activeCategory === 'drupal-api' && 'Code snippets for working with Drupal\'s JSON API'}
+                    {activeCategory === 'wordpress-api' && 'Code snippets for working with WordPress REST API'}
+                    {activeCategory === 'graphql' && 'GraphQL queries and implementations for both platforms'}
+                    {activeCategory === 'php-extensions' && 'PHP code for extending Drupal and WordPress APIs'}
+                    {activeCategory === 'comparison' && 'Direct comparison of API patterns and structures'}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
-          
-          <div className="space-y-6">
-            {wordpressExamples.map((example, index) => (
-              <CodeExample
-                key={index}
-                title={example.title}
-                language={example.language}
-                code={example.code}
-                description={example.description}
-              />
-            ))}
-          </div>
-        </section>
+        </div>
 
-        {/* Comparison Examples */}
-        <section>
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Code2 className="w-6 h-6 text-purple-600" />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">API Comparison</h2>
-              <p className="text-gray-600">Direct comparison of response structures</p>
-            </div>
+        {/* Examples */}
+        <div className="space-y-6">
+          {activeExamples.map((example, index) => (
+            <CodeExample
+              key={`${activeCategory}-${index}`}
+              title={example.title}
+              language={example.language}
+              code={example.code}
+              description={example.description}
+            />
+          ))}
+        </div>
+
+        {/* Presentation Tips */}
+        <div className="mt-12 bg-blue-50 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-blue-900 mb-3">💡 Presentation Tips</h3>
+          <div className="text-sm text-blue-800 space-y-2">
+            <p>• Use the category tabs to focus on specific topics during your presentation</p>
+            <p>• Click the copy button to quickly grab code snippets for live demos</p>
+            <p>• The examples progress from basic to advanced within each category</p>
+            <p>• GraphQL examples show modern alternatives to traditional REST APIs</p>
+            <p>• PHP extensions demonstrate how to customize each platform's API behavior</p>
           </div>
-          
-          <div className="space-y-6">
-            {comparisonExamples.map((example, index) => (
-              <CodeExample
-                key={index}
-                title={example.title}
-                language={example.language}
-                code={example.code}
-                description={example.description}
-              />
-            ))}
-          </div>
-        </section>
+        </div>
       </main>
     </div>
   );
