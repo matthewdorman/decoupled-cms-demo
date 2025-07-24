@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Database, Globe, ArrowRight, Code2, Zap, Shield, FileCode } from 'lucide-react';
+import { QRCode } from '../components/QRCode';
 
 export const HomePage: React.FC = () => {
   return (
@@ -20,6 +21,15 @@ export const HomePage: React.FC = () => {
             in a modern React application. See how each platform handles content delivery 
             in decoupled architectures.
           </p>
+          
+          {/* QR Code for Demo Access */}
+          <div className="flex justify-center mb-8">
+            <QRCode 
+              url="https://decoupled-cms-demo-haj7i.kinsta.page/"
+              title="Access This Demo"
+              className="max-w-sm"
+            />
+          </div>
         </div>
 
         {/* Platform Cards */}
