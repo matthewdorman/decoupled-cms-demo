@@ -6,7 +6,7 @@ export default {
       colors: {
         brand: {
           navy: '#FE1132',
-          teal: '#14B8A6',
+          teal: '#FE1132',
           red: '#FE1132',
           'light-gray': '#F7FAFC',
           'text-gray': '#4A5568'
