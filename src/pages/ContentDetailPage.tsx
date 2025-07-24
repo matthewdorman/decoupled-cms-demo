@@ -66,18 +66,18 @@ export const ContentDetailPage: React.FC = () => {
     drupal: {
       name: 'Drupal JSON API',
       icon: Database,
-      color: 'blue',
-      bgColor: 'bg-blue-600',
-      lightBg: 'bg-blue-50',
-      textColor: 'text-blue-600'
+      color: 'teal',
+      bgColor: 'bg-brand-navy',
+      lightBg: 'bg-brand-teal/5',
+      textColor: 'text-brand-teal'
     },
     wordpress: {
       name: 'WordPress REST API',
       icon: Globe,
-      color: 'green',
-      bgColor: 'bg-green-600',
-      lightBg: 'bg-green-50',
-      textColor: 'text-green-600'
+      color: 'teal',
+      bgColor: 'bg-brand-navy',
+      lightBg: 'bg-brand-teal/5',
+      textColor: 'text-brand-teal'
     }
   };
 
@@ -86,7 +86,7 @@ export const ContentDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-brand-light-gray">
         <div className={`${config.bgColor} text-white py-8`}>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <Link 
@@ -107,7 +107,7 @@ export const ContentDetailPage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-brand-light-gray">
         <div className={`${config.bgColor} text-white py-8`}>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <Link 
@@ -128,7 +128,7 @@ export const ContentDetailPage: React.FC = () => {
 
   if (!content) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-brand-light-gray">
         <div className={`${config.bgColor} text-white py-8`}>
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <Link 
@@ -169,7 +169,7 @@ export const ContentDetailPage: React.FC = () => {
     : content.acf?.location;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-light-gray">
       {/* Header */}
       <div className={`${config.bgColor} text-white py-8`}>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -182,7 +182,7 @@ export const ContentDetailPage: React.FC = () => {
           </Link>
           
           <div className="flex items-center gap-4 mb-4">
-            <div className={`p-2 ${config.lightBg.replace('bg-', 'bg-').replace('-50', '-500')} rounded-lg`}>
+            <div className="p-2 bg-brand-teal rounded-lg">
               <Icon className="w-6 h-6" />
             </div>
             <div>
@@ -205,16 +205,16 @@ export const ContentDetailPage: React.FC = () => {
           <div className={`${config.lightBg} px-6 py-4 border-b`}>
             <div className="flex flex-wrap gap-4 text-sm">
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-gray-500" />
-                <span className="text-gray-700">
+                <Calendar className="w-4 h-4 text-brand-text-gray" />
+                <span className="text-brand-navy">
                   Published: {formatDate(publishDate)}
                 </span>
               </div>
               
               {type === 'event' && eventDate && (
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-gray-500" />
-                  <span className="text-gray-700">
+                  <Calendar className="w-4 h-4 text-brand-text-gray" />
+                  <span className="text-brand-navy">
                     Event Date: {formatDate(eventDate)}
                   </span>
                 </div>
@@ -222,8 +222,8 @@ export const ContentDetailPage: React.FC = () => {
               
               {location && (
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-gray-500" />
-                  <span className="text-gray-700">{location}</span>
+                  <MapPin className="w-4 h-4 text-brand-text-gray" />
+                  <span className="text-brand-navy">{location}</span>
                 </div>
               )}
             </div>
@@ -238,9 +238,9 @@ export const ContentDetailPage: React.FC = () => {
           </div>
 
           {/* API Information */}
-          <div className="px-6 py-4 bg-gray-50 border-t">
-            <h3 className="text-sm font-semibold text-gray-900 mb-2">API Details</h3>
-            <div className="text-xs text-gray-600 space-y-1">
+          <div className="px-6 py-4 bg-brand-light-gray border-t">
+            <h3 className="text-sm font-semibold text-brand-navy mb-2">API Details</h3>
+            <div className="text-xs text-brand-text-gray space-y-1">
               <p><strong>Platform:</strong> {config.name}</p>
               <p><strong>Content Type:</strong> {type}</p>
               <p><strong>Content ID:</strong> {id}</p>

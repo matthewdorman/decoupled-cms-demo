@@ -30,15 +30,15 @@ export const CodeExample: React.FC<CodeExampleProps> = ({
     <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
       <div className="flex items-center justify-between px-4 py-3 bg-gray-50 border-b">
         <div className="flex items-center gap-2">
-          <Code2 className="w-4 h-4 text-gray-600" />
-          <h3 className="font-semibold text-gray-900">{title}</h3>
-          <span className="px-2 py-1 text-xs bg-gray-200 text-gray-700 rounded">
+          <Code2 className="w-4 h-4 text-brand-text-gray" />
+          <h3 className="font-semibold text-brand-navy">{title}</h3>
+          <span className="px-2 py-1 text-xs bg-brand-teal/10 text-brand-navy rounded">
             {language}
           </span>
         </div>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          className="flex items-center gap-1 px-3 py-1 text-sm bg-brand-teal text-white rounded hover:bg-brand-teal/90 transition-colors"
         >
           {copied ? (
             <>
@@ -55,13 +55,13 @@ export const CodeExample: React.FC<CodeExampleProps> = ({
       </div>
       
       {description && (
-        <div className="px-4 py-2 bg-blue-50 text-sm text-blue-800 border-b">
+        <div className="px-4 py-2 bg-brand-teal/5 text-sm text-brand-navy border-b">
           {description}
         </div>
       )}
       
       <div className="relative">
-        <pre className="p-4 overflow-x-auto text-sm bg-gray-900 text-gray-100">
+        <pre className="p-4 overflow-x-auto text-sm bg-brand-navy text-gray-100">
           <code>{code}</code>
         </pre>
       </div>

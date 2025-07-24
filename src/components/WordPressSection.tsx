@@ -12,18 +12,18 @@ export const WordPressSection: React.FC = () => {
   return (
     <section className="mb-12">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-green-100 rounded-lg">
-          <Globe className="w-6 h-6 text-green-600" />
+        <div className="p-2 bg-brand-teal/10 rounded-lg">
+          <Globe className="w-6 h-6 text-brand-teal" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">WordPress REST API</h2>
-          <p className="text-gray-600">Content fetched via WordPress REST API endpoints</p>
+          <h2 className="text-2xl font-bold text-brand-navy">WordPress REST API</h2>
+          <p className="text-brand-text-gray">Content fetched via WordPress REST API endpoints</p>
         </div>
       </div>
 
       {/* Posts Section */}
       <div className="mb-8">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Posts</h3>
+        <h3 className="text-lg font-semibold text-brand-navy mb-4">Posts</h3>
         {postsLoading ? (
           <LoadingSpinner className="py-8" />
         ) : postsError ? (
@@ -47,7 +47,7 @@ export const WordPressSection: React.FC = () => {
 
       {/* Events Section */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Events</h3>
+        <h3 className="text-lg font-semibold text-brand-navy mb-4">Events</h3>
         {eventsLoading ? (
           <LoadingSpinner className="py-8" />
         ) : eventsError ? (

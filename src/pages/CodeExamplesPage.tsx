@@ -9,11 +9,11 @@ export const CodeExamplesPage: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<ExampleCategory>('drupal-api');
 
   const categories = [
-    { id: 'drupal-api' as ExampleCategory, name: 'Drupal JSON API', icon: Database, color: 'blue' },
-    { id: 'wordpress-api' as ExampleCategory, name: 'WordPress REST API', icon: Globe, color: 'green' },
-    { id: 'graphql' as ExampleCategory, name: 'GraphQL', icon: Zap, color: 'purple' },
-    { id: 'php-extensions' as ExampleCategory, name: 'PHP Extensions', icon: Server, color: 'orange' },
-    { id: 'comparison' as ExampleCategory, name: 'API Comparison', icon: Code2, color: 'gray' }
+    { id: 'drupal-api' as ExampleCategory, name: 'Drupal JSON API', icon: Database, color: 'teal' },
+    { id: 'wordpress-api' as ExampleCategory, name: 'WordPress REST API', icon: Globe, color: 'teal' },
+    { id: 'graphql' as ExampleCategory, name: 'GraphQL', icon: Zap, color: 'teal' },
+    { id: 'php-extensions' as ExampleCategory, name: 'PHP Extensions', icon: Server, color: 'teal' },
+    { id: 'comparison' as ExampleCategory, name: 'API Comparison', icon: Code2, color: 'navy' }
   ];
 
   const drupalExamples = [
@@ -921,9 +921,9 @@ const fetchArticleWithAuthorAndTags = async (articleId) => {
   const activeConfig = categories.find(cat => cat.id === activeCategory);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-brand-light-gray">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-green-600 text-white py-12">
+      <div className="bg-gradient-to-r from-brand-navy to-brand-teal text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Link 
             to="/"
@@ -934,12 +934,12 @@ const fetchArticleWithAuthorAndTags = async (articleId) => {
           </Link>
           
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-white/20 rounded-xl">
+            <div className="p-3 bg-white/10 rounded-xl">
               <Code2 className="w-8 h-8" />
             </div>
             <div>
               <h1 className="text-3xl md:text-4xl font-bold">Code Examples</h1>
-              <p className="text-white/90 mt-2">
+              <p className="text-white/80 mt-2">
                 Interactive code snippets for API integration and platform extensions
               </p>
             </div>
@@ -960,8 +960,10 @@ const fetchArticleWithAuthorAndTags = async (articleId) => {
                   onClick={() => setActiveCategory(category.id)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                     isActive
-                      ? `bg-${category.color}-100 text-${category.color}-700 shadow-md`
-                      : 'bg-white text-gray-600 hover:bg-gray-50 hover:text-gray-900 shadow-sm'
+                      ? category.color === 'navy' 
+                        ? 'bg-brand-navy text-white shadow-md'
+                        : 'bg-brand-teal/10 text-brand-navy shadow-md'
+                      : 'bg-white text-brand-text-gray hover:bg-brand-light-gray hover:text-brand-navy shadow-sm'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -977,12 +979,12 @@ const fetchArticleWithAuthorAndTags = async (articleId) => {
           <div className="flex items-center gap-3">
             {activeConfig && (
               <>
-                <div className={`p-2 bg-${activeConfig.color}-100 rounded-lg`}>
-                  <activeConfig.icon className={`w-6 h-6 text-${activeConfig.color}-600`} />
+                <div className="p-2 bg-brand-teal/10 rounded-lg">
+                  <activeConfig.icon className="w-6 h-6 text-brand-teal" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{activeConfig.name}</h2>
-                  <p className="text-gray-600">
+                  <h2 className="text-2xl font-bold text-brand-navy">{activeConfig.name}</h2>
+                  <p className="text-brand-text-gray">
                     {activeCategory === 'drupal-api' && 'Code snippets for working with Drupal\'s JSON API'}
                     {activeCategory === 'wordpress-api' && 'Code snippets for working with WordPress REST API'}
                     {activeCategory === 'graphql' && 'GraphQL queries and implementations for both platforms'}
@@ -1009,9 +1011,9 @@ const fetchArticleWithAuthorAndTags = async (articleId) => {
         </div>
 
         {/* Presentation Tips */}
-        <div className="mt-12 bg-blue-50 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-blue-900 mb-3">💡 Presentation Tips</h3>
-          <div className="text-sm text-blue-800 space-y-2">
+        <div className="mt-12 bg-brand-teal/5 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-brand-navy mb-3">💡 Presentation Tips</h3>
+          <div className="text-sm text-brand-text-gray space-y-2">
             <p>• Use the category tabs to focus on specific topics during your presentation</p>
             <p>• Click the copy button to quickly grab code snippets for live demos</p>
             <p>• The examples progress from basic to advanced within each category</p>
