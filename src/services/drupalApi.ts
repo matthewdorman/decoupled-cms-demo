@@ -1,6 +1,6 @@
 import { DrupalArticle, DrupalEvent, DrupalApiResponse } from '../types';
 
-const DRUPAL_BASE_URL = 'https://www.drupal.org/jsonapi';
+const DRUPAL_BASE_URL = 'https://drupalize.me/jsonapi';
 
 class DrupalApiService {
   private async fetchFromDrupal<T>(endpoint: string): Promise<DrupalApiResponse<T>> {
