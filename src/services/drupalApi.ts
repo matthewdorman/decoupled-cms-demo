@@ -1,15 +1,33 @@
 import { DrupalArticle, DrupalEvent, DrupalApiResponse } from '../types';
 
-const DRUPAL_BASE_URL = 'https://drupalize.me/jsonapi';
+// Try different Drupal sites that may have more open CORS policies
+const DRUPAL_ENDPOINTS = [
+  'https://www.drupal.org/jsonapi',
+  'https://demo.drupal.org/jsonapi',
+  'https://simplytest.me/jsonapi',
+  'https://contenta.lndo.site/jsonapi'
+];
 
 class DrupalApiService {
   private async fetchFromDrupal<T>(endpoint: string): Promise<DrupalApiResponse<T>> {
-    try {
-      const response = await fetch(`${DRUPAL_BASE_URL}${endpoint}`);
-      if (!response.ok) {
-        throw new Error(`Drupal API error: ${response.status}`);
+    // Try multiple Drupal endpoints until one works
+    for (const baseUrl of DRUPAL_ENDPOINTS) {
+      try {
+        const response = await fetch(`${baseUrl}${endpoint}`);
+        if (response.ok) {
+          return await response.json();
+        }
+      } catch (error) {
+        console.warn(`Failed to fetch from ${baseUrl}:`, error);
+        continue;
       }
-      return await response.json();
+    }
+    throw new Error('All Drupal API endpoints failed');
+  }
+
+  private async tryFetchFromDrupal<T>(endpoint: string): Promise<DrupalApiResponse<T>> {
+    try {
+      return await this.fetchFromDrupal(endpoint);
     } catch (error) {
       console.error('Drupal API fetch error:', error);
       throw error;
@@ -18,15 +36,8 @@ class DrupalApiService {
 
   async getArticles(limit: number = 10): Promise<DrupalArticle[]> {
     try {
-      // Try to fetch from Drupal.org's JSON API endpoint for articles
-      const response = await fetch(`${DRUPAL_BASE_URL}/node/article?page[limit]=${limit}&include=field_image`);
-      
-      if (!response.ok) {
-        console.warn('Drupal API request failed, using mock data');
-        return this.getMockArticles();
-      }
-      
-      const data = await response.json();
+      console.log('Attempting to fetch Drupal articles from multiple endpoints...');
+      const data = await this.fetchFromDrupal(`/node/article?page[limit]=${limit}`);
       
       // Return the JSON API formatted data
       return data.data?.map((item: any) => ({
@@ -46,7 +57,7 @@ class DrupalApiService {
       })) || [];
     } catch (error) {
       console.error('Error fetching Drupal articles:', error);
-      console.warn('Falling back to mock data for demonstration');
+      console.warn('All Drupal endpoints failed, falling back to mock data for demonstration');
       return this.getMockArticles();
     }
   }
