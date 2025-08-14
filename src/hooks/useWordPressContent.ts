@@ -51,3 +51,63 @@ export const useWordPressEvents = (limit: number = 10) => {
 
   return { events, loading, error };
 };
+
+export const useWordPressPost = (id: number) => {
+  const [post, setPost] = useState<WordPressPost | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await wordpressApi.getPost(id);
+        setPost(data);
+        if (!data) {
+          setError('Post not found');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch post');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchPost();
+    }
+  }, [id]);
+
+  return { post, loading, error };
+};
+
+export const useWordPressEvent = (id: number) => {
+  const [event, setEvent] = useState<WordPressEvent | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await wordpressApi.getEvent(id);
+        setEvent(data);
+        if (!data) {
+          setError('Event not found');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch event');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchEvent();
+    }
+  }, [id]);
+
+  return { event, loading, error };
+};

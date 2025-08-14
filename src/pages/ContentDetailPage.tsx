@@ -1,8 +1,9 @@
 import React from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { ArrowLeft, Calendar, MapPin, Database, Globe, ExternalLink } from 'lucide-react';
-import { useDrupalArticles, useDrupalEvents } from '../hooks/useDrupalContent';
-import { useWordPressPosts, useWordPressEvents } from '../hooks/useWordPressContent';
+import { ArrowLeft, Calendar, MapPin, Database, Globe, Edit3, Save, X } from 'lucide-react';
+import { useDrupalArticle, useDrupalEvent } from '../hooks/useDrupalContent';
+import { useWordPressPost, useWordPressEvent } from '../hooks/useWordPressContent';
+import { drupalApi } from '../services/drupalApi';
 import { LoadingSpinner } from '../components/LoadingSpinner';
 import { ErrorMessage } from '../components/ErrorMessage';
 
@@ -13,11 +14,46 @@ export const ContentDetailPage: React.FC = () => {
     id: string;
   }>();
 
-  // Fetch data based on platform and type
-  const { articles: drupalArticles, loading: drupalArticlesLoading, error: drupalArticlesError } = useDrupalArticles();
-  const { events: drupalEvents, loading: drupalEventsLoading, error: drupalEventsError } = useDrupalEvents();
-  const { posts: wordpressPosts, loading: wordpressPostsLoading, error: wordpressPostsError } = useWordPressPosts();
-  const { events: wordpressEvents, loading: wordpressEventsLoading, error: wordpressEventsError } = useWordPressEvents();
+  // Always call all hooks to avoid conditional hook calls
+  const { article: drupalArticle, loading: drupalArticleLoading, error: drupalArticleError, refetch: refetchDrupalArticle } = useDrupalArticle(
+    platform === 'drupal' && type === 'article' && id ? id : ''
+  );
+  const { event: drupalEvent, loading: drupalEventLoading, error: drupalEventError } = useDrupalEvent(
+    platform === 'drupal' && type === 'event' && id ? id : ''
+  );
+  const { post: wordpressPost, loading: wordpressPostLoading, error: wordpressPostError } = useWordPressPost(
+    platform === 'wordpress' && type === 'article' && id ? parseInt(id) : 0
+  );
+  const { event: wordpressEvent, loading: wordpressEventLoading, error: wordpressEventError } = useWordPressEvent(
+    platform === 'wordpress' && type === 'event' && id ? parseInt(id) : 0
+  );
+
+  // All state hooks - always called
+  const [isEditing, setIsEditing] = React.useState(false);
+  const [editTitle, setEditTitle] = React.useState('');
+  const [editBody, setEditBody] = React.useState('');
+  const [saveLoading, setSaveLoading] = React.useState(false);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+
+  // Always call useEffect hooks in the same order
+  // Check authentication status
+  React.useEffect(() => {
+    const checkAuthStatus = () => {
+      setIsAuthenticated(drupalApi.isAuthenticated());
+    };
+    
+    checkAuthStatus();
+    const interval = setInterval(checkAuthStatus, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Initialize edit form when content loads
+  React.useEffect(() => {
+    if (platform === 'drupal' && type === 'article' && drupalArticle) {
+      setEditTitle(drupalArticle.attributes.title);
+      setEditBody(drupalArticle.attributes.body?.value || '');
+    }
+  }, [platform, type, drupalArticle]);
 
   if (!platform || !type || !id) {
     return <Navigate to="/" replace />;
@@ -25,24 +61,22 @@ export const ContentDetailPage: React.FC = () => {
 
   // Determine loading state
   const isLoading = platform === 'drupal' 
-    ? (type === 'article' ? drupalArticlesLoading : drupalEventsLoading)
-    : (type === 'article' ? wordpressPostsLoading : wordpressEventsLoading);
+    ? (type === 'article' ? drupalArticleLoading : drupalEventLoading)
+    : (type === 'article' ? wordpressPostLoading : wordpressEventLoading);
 
   // Determine error state
   const error = platform === 'drupal'
-    ? (type === 'article' ? drupalArticlesError : drupalEventsError)
-    : (type === 'article' ? wordpressPostsError : wordpressEventsError);
+    ? (type === 'article' ? drupalArticleError : drupalEventError)
+    : (type === 'article' ? wordpressPostError : wordpressEventError);
 
   // Find the specific content item
   let content: any = null;
   
   if (!isLoading && !error) {
     if (platform === 'drupal') {
-      const items = type === 'article' ? drupalArticles : drupalEvents;
-      content = items.find(item => item.id === id);
+      content = type === 'article' ? drupalArticle : drupalEvent;
     } else {
-      const items = type === 'article' ? wordpressPosts : wordpressEvents;
-      content = items.find(item => item.id.toString() === id);
+      content = type === 'article' ? wordpressPost : wordpressEvent;
     }
   }
 
@@ -54,12 +88,6 @@ export const ContentDetailPage: React.FC = () => {
       hour: '2-digit',
       minute: '2-digit'
     });
-  };
-
-  const stripHtml = (html: string) => {
-    const tmp = document.createElement('div');
-    tmp.innerHTML = html;
-    return tmp.textContent || tmp.innerText || '';
   };
 
   const platformConfig = {
@@ -83,6 +111,41 @@ export const ContentDetailPage: React.FC = () => {
 
   const config = platformConfig[platform];
   const Icon = config.icon;
+
+  const handleStartEdit = () => {
+    if (content && platform === 'drupal') {
+      setEditTitle(content.attributes.title);
+      setEditBody(content.attributes.body?.value || '');
+      setIsEditing(true);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    if (content && platform === 'drupal') {
+      setEditTitle(content.attributes.title);
+      setEditBody(content.attributes.body?.value || '');
+    }
+  };
+
+  const handleSaveEdit = async () => {
+    if (!content || platform !== 'drupal' || !editTitle.trim() || !editBody.trim()) {
+      return;
+    }
+
+    setSaveLoading(true);
+    try {
+      await drupalApi.updateArticle(content.id, editTitle, editBody);
+      setIsEditing(false);
+      refetchDrupalArticle();
+    } catch (error) {
+      console.error('Error updating article:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      alert(`Failed to update article: ${errorMessage}`);
+    } finally {
+      setSaveLoading(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -192,9 +255,52 @@ export const ContentDetailPage: React.FC = () => {
             </div>
           </div>
           
-          <h1 className="text-3xl md:text-4xl font-bold leading-tight">
-            {title}
-          </h1>
+          {/* Inline Edit Form or Title */}
+          {isEditing ? (
+            <div className="space-y-4">
+              <input
+                type="text"
+                value={editTitle}
+                onChange={(e) => setEditTitle(e.target.value)}
+                className="w-full text-3xl md:text-4xl font-bold bg-white/10 text-white placeholder-white/60 border border-white/20 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-brand-teal"
+                placeholder="Article title..."
+              />
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleSaveEdit}
+                  disabled={saveLoading || !editTitle.trim() || !editBody.trim()}
+                  className="flex items-center gap-2 px-4 py-2 bg-brand-teal text-white rounded-lg hover:bg-brand-teal/90 transition-colors disabled:opacity-50"
+                >
+                  <Save className="w-4 h-4" />
+                  {saveLoading ? 'Saving...' : 'Save Changes'}
+                </button>
+                <button
+                  onClick={handleCancelEdit}
+                  className="flex items-center gap-2 px-4 py-2 border border-white/30 text-white rounded-lg hover:bg-white/10 transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-4">
+                {title}
+              </h1>
+              
+              {/* Edit Button for Drupal Articles */}
+              {platform === 'drupal' && type === 'article' && isAuthenticated && (
+                <button
+                  onClick={handleStartEdit}
+                  className="flex items-center gap-2 px-4 py-2 bg-brand-teal text-white rounded-lg hover:bg-brand-teal/90 transition-colors"
+                >
+                  <Edit3 className="w-4 h-4" />
+                  Edit Article
+                </button>
+              )}
+            </>
+          )}
         </div>
       </div>
 
@@ -231,10 +337,28 @@ export const ContentDetailPage: React.FC = () => {
 
           {/* Content Body */}
           <div className="px-6 py-8">
-            <div 
-              className="prose prose-lg max-w-none"
-              dangerouslySetInnerHTML={{ __html: body }}
-            />
+            {isEditing ? (
+              <div>
+                <label className="block text-sm font-medium text-brand-navy mb-2">
+                  Article Content
+                </label>
+                <textarea
+                  value={editBody}
+                  onChange={(e) => setEditBody(e.target.value)}
+                  rows={15}
+                  className="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-teal focus:border-transparent resize-none"
+                  placeholder="Enter article content... (HTML allowed)"
+                />
+                <p className="text-xs text-brand-text-gray mt-2">
+                  You can use basic HTML tags like &lt;p&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;li&gt;, etc.
+                </p>
+              </div>
+            ) : (
+              <div 
+                className="prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: body }}
+              />
+            )}
           </div>
 
           {/* API Information */}

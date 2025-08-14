@@ -37,6 +37,29 @@ class WordPressApiService {
     }
   }
 
+  async getPost(id: number): Promise<WordPressPost | null> {
+    try {
+      const post = await this.fetchFromWordPress<WordPressPost>(`/posts/${id}?_embed`);
+      return post;
+    } catch (error) {
+      console.error('Error fetching WordPress post:', error);
+      // Try to find in mock data
+      const mockPosts = this.getMockPosts();
+      return mockPosts.find(post => post.id === id) || null;
+    }
+  }
+
+  async getEvent(id: number): Promise<WordPressEvent | null> {
+    try {
+      // Most WordPress sites don't have events endpoint, so we'll use mock data
+      const mockEvents = this.getMockEvents();
+      return mockEvents.find(event => event.id === id) || null;
+    } catch (error) {
+      console.error('Error fetching WordPress event:', error);
+      return null;
+    }
+  }
+
   private getMockPosts(): WordPressPost[] {
     return [
       {
